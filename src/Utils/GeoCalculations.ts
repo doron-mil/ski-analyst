@@ -37,11 +37,24 @@ export class GeoCalculations {
     static distanceCalculation(
         pos1: PosRecord, pos2: PosRecord
     ): number {
-        if (!pos1.alt || !pos2.alt){
-            throw new Error('GeoCalculations.distanceCalculation got missing altitude data')
+        if (!pos1.alt || !pos2.alt) {
+            throw new Error('GeoCalculations.distanceCalculation got missing altitude data');
         }
         return GeoCalculations.haversineDistanceCalculationWithElevation(
             pos1.lat, pos1.lon, pos1.alt, pos2.lat, pos2.lon, pos2.alt);
+    }
+
+    static distanceCalculationElevationNotMandatory(
+        pos1: PosRecord, pos2: PosRecord
+    ): number {
+        let retResult = null;
+        if (!pos1.alt || !pos2.alt) {
+            retResult = GeoCalculations.haversineDistanceCalculation(
+                pos1.lat, pos1.lon, pos2.lat, pos2.lon);
+        } else {
+            retResult = GeoCalculations.distanceCalculation(pos1, pos2);
+        }
+        return retResult;
     }
 
 }

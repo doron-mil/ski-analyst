@@ -1,0 +1,43 @@
+{
+  "siteName": "3Valleys",
+  "lifts": [
+    {
+      "liftName": "Tougnète1",
+      "type": "gondola",
+      "start": {
+        "lat": 45.3908767,
+        "lon": 6.5680234
+      },
+      "end": {
+        "lat": 45.3771527,
+        "lon": 6.5634756
+      }
+    },
+    {
+      "liftName": "Plattieres",
+      "type": "gondola",
+      "start": {
+        "lat": 45.3710822,
+        "lon": 6.5806646
+      },
+      "end": {
+        "lat": 45.3435459,
+        "lon": 6.5774816
+      }
+    },
+    {
+      "liftName": "Côte Brune",
+      "type": "chair_lift",
+      "start": {
+        "lat": 45.3361082,
+        "lon": 6.5818017
+      },
+      "end": {
+        "lat": 45.3192949,
+        "lon": 6.5799470
+      }
+    }
+  ],
+  "Slopes": [
+  ]
+}
