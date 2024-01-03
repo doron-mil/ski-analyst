@@ -21,6 +21,8 @@ export class GpxXml2JsonConverter {
         }
 
         let prevPosition: (PosRecord | null) = null;
+        let momentTime, prevMomentTime: moment.Moment;
+
         for (let i = 0; i < (childrenCount ? childrenCount : 0); i++) {
             const childNode = firstTrackSegment.childNodes[i] as Element;
             if (childNode.nodeName != 'trkpt') {
@@ -39,7 +41,7 @@ export class GpxXml2JsonConverter {
                 const val = node.childNodes[0].nodeValue;
                 switch (node.nodeName) {
                     case 'time' :
-                        const momentTime = moment(val);
+                        momentTime = moment(val);
                         time = momentTime.format('hh:mm:ss');//, 'YYYY-MM-DDThh:mm:ssZ'
                         if (!gpxRecord.positionsRecords.length) {
                             creationDate = momentTime;
@@ -63,10 +65,14 @@ export class GpxXml2JsonConverter {
             if (prevPosition) {
                 newGpxOnePosRecord.dist = GeoCalculations.distanceCalculation(prevPosition, newGpxOnePosRecord);
                 newGpxOnePosRecord.dEle = newGpxOnePosRecord.alt! - prevPosition.alt!;
+
+                const deltaTime = momentTime.diff(prevMomentTime) / 1000; //in seconds
+                newGpxOnePosRecord.speed = newGpxOnePosRecord.dist / deltaTime;
             }
 
             gpxRecord.addPositionRecord(newGpxOnePosRecord);
             prevPosition = newGpxOnePosRecord;
+            prevMomentTime = momentTime;
         }
         return new GpxModule(creationDate, gpxRecord);
     }

@@ -3,6 +3,7 @@ import {GpxRecord} from '../model/GpxRecord';
 
 export class IndexedDb {
     gpxStore: LocalForage;
+    skiSiteStore: LocalForage;
 
     constructor() {
         localForage.config({
@@ -13,6 +14,9 @@ export class IndexedDb {
 
         this.gpxStore = localForage.createInstance({
             name: "gpx_store"
+        });
+        this.skiSiteStore = localForage.createInstance({
+            name: "ski_site_store"
         });
 
     }
@@ -28,6 +32,22 @@ export class IndexedDb {
 
     setGpxRecord(aKey: string, aValue: any) {
         this.gpxStore.setItem<GpxRecord>(aKey, aValue).then()
+            .catch((err: any) => {
+                throw err;
+            });
+    }
+
+   getSkiSiteRecord(aKey: string): GpxRecord | null {
+        this.skiSiteStore.getItem<GpxRecord>(aKey).then((value: GpxRecord | null) => {
+            return value;
+        }).catch((err: any) => {
+            throw err;
+        });
+        return null;
+    }
+
+    setSkiSiteRecord(aKey: string, aValue: any) {
+        this.skiSiteStore.setItem<GpxRecord>(aKey, aValue).then()
             .catch((err: any) => {
                 throw err;
             });
