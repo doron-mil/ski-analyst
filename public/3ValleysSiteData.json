@@ -1,0 +1,85 @@
+{
+  "siteName": "3Valleys",
+  "lifts": [
+    {
+      "liftName": "Tougnète1",
+      "id": "01010101",
+      "type": "gondola",
+      "start": {
+        "lat": 45.3908767,
+        "lon": 6.5680234
+      },
+      "end": {
+        "lat": 45.3771527,
+        "lon": 6.5634756
+      }
+    },
+    {
+      "liftName": "Legends",
+      "id": "01010102",
+      "type": "chair_lift",
+      "start": {
+        "lat": 45.3909476,
+        "lon": 6.5672882
+      },
+      "end": {
+        "lat": 45.3804511,
+        "lon": 6.5543322
+      }
+    },
+    {
+      "liftName": "Saulire Express 1",
+      "id": "01010103",
+      "type": "gondola",
+      "start": {
+        "lat": 45.3892763,
+        "lon": 6.5880518
+      },
+      "end": {
+        "lat": 45.3804511,
+        "lon": 6.5543322
+      }
+    },
+    {
+      "liftName": "Saulire Express 2",
+      "id": "01010301",
+      "type": "gondola",
+      "start": {
+        "lat": 45.3804511,
+        "lon": 6.5543322
+      },
+      "end": {
+        "lat": 45.3833503,
+        "lon": 6.6101322
+      }
+    },
+    {
+      "liftName": "Plattieres",
+      "id": "01010201",
+      "type": "gondola",
+      "start": {
+        "lat": 45.3710822,
+        "lon": 6.5806646
+      },
+      "end": {
+        "lat": 45.3435459,
+        "lon": 6.5774816
+      }
+    },
+    {
+      "liftName": "Côte Brune",
+      "id": "01010401",
+      "type": "chair_lift",
+      "start": {
+        "lat": 45.3361082,
+        "lon": 6.5818017
+      },
+      "end": {
+        "lat": 45.3192949,
+        "lon": 6.5799470
+      }
+    }
+  ],
+  "runs": [
+  ]
+}

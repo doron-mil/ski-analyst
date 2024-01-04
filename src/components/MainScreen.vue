@@ -39,7 +39,8 @@
     {{ calculatedDistance }}
   </div>
 
-  <GraphDialog v-if="popupTriggers.graphDialog">
+  <GraphDialog v-if="popupTriggers.graphDialog"
+               :closeDialog="()=>togglePopup('graphDialog',Boolean(false))">
 
   </GraphDialog>
 
@@ -121,8 +122,12 @@ export default {
       togglePopup('graphDialog');
     }
 
-    function togglePopup(trigger) {
-      popupTriggers.value[trigger] = !popupTriggers.value[trigger];
+    function togglePopup(trigger: string, specific: Boolean) {
+      if (specific) {
+        popupTriggers.value[trigger] = specific.valueOf();
+      } else {
+        popupTriggers.value[trigger] = !popupTriggers.value[trigger];
+      }
     }
 
     function findElevators() {
@@ -164,7 +169,8 @@ export default {
       import3Valleys,
       calculateDistance,
       findElevators,
-      OpenGraphDialog
+      OpenGraphDialog,
+      togglePopup
     };
 
   }
