@@ -13,7 +13,8 @@
     "localforage": "^1.10.0",
     "moment": "^2.30.1",
     "vue": "^3.3.4",
-    "vue3-apexcharts": "^1.4.4"
+    "vue3-apexcharts": "^1.4.4",
+    "vuex": "^4.0.2"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.2.3",

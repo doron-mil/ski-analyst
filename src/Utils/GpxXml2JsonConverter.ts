@@ -42,7 +42,8 @@ export class GpxXml2JsonConverter {
                 switch (node.nodeName) {
                     case 'time' :
                         momentTime = moment(val);
-                        time = momentTime.format('hh:mm:ss');//, 'YYYY-MM-DDThh:mm:ssZ'
+                        // console.log('0000', momentTime.utcOffset(), momentTime.inspect());
+                        time = momentTime.format('HH:mm:ss');//, 'YYYY-MM-DDThh:mm:ssZ'
                         if (!gpxRecord.positionsRecords.length) {
                             creationDate = momentTime;
                         }

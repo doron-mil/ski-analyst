@@ -21,13 +21,16 @@ export class IndexedDb {
 
     }
 
-    getGpxRecord(aKey: string): GpxRecord | null {
-        this.gpxStore.getItem<GpxRecord>(aKey).then((value: GpxRecord | null) => {
-            return value;
-        }).catch((err: any) => {
-            throw err;
+    async getGpxRecord(aKey: string): Promise<GpxRecord> | null {
+        const retResult = new Promise<GpxRecord>((resolve, reject) => {
+            this.gpxStore.getItem<GpxRecord>(aKey).then((value: GpxRecord | null) => {
+                resolve(value);
+            }).catch((err: any) => {
+                reject(err);
+            });
+
         });
-        return null;
+        return retResult;
     }
 
     setGpxRecord(aKey: string, aValue: any) {
@@ -37,7 +40,7 @@ export class IndexedDb {
             });
     }
 
-   getSkiSiteRecord(aKey: string): GpxRecord | null {
+    getSkiSiteRecord(aKey: string): GpxRecord | null {
         this.skiSiteStore.getItem<GpxRecord>(aKey).then((value: GpxRecord | null) => {
             return value;
         }).catch((err: any) => {
