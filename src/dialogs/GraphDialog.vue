@@ -27,21 +27,84 @@ export default {
   setup() {
     const store = useStore();
 
-    const graphData : { x: number,y: number}[] = ref();
+    const graphData: { x: number, y: number, y2: number }[] = ref();
 
     const options = ref({
       chart: {
         id: 'vuechart-example'
       },
       xaxis: {
-        type : 'numeric',
-        categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998]
+        type: 'numeric',
+        categories: []
       },
+      yaxis: [
+        {
+          axisTicks: {
+            show: true
+          },
+          axisBorder: {
+            show: true,
+            color: "#FF1654"
+          },
+          labels: {
+            style: {
+              colors: "#FF1654"
+            }
+          },
+          title: {
+            text: "Series A",
+            style: {
+              color: "#FF1654"
+            }
+          }
+        },
+        {
+          opposite: true,
+          axisTicks: {
+            show: true
+          },
+          axisBorder: {
+            show: true,
+            color: "#247BA0"
+          },
+          labels: {
+            style: {
+              colors: "#247BA0"
+            }
+          },
+          title: {
+            text: "Series B",
+            style: {
+              color: "#247BA0"
+            }
+          }
+        }
+      ],
+
       tooltip: {
         custom: function ({series, seriesIndex, dataPointIndex, w}) {
-          return '<div class="arrow_box">' +
-              '<span>' + 'aaa' + graphData.value[dataPointIndex].x + 'ccccc' + series[seriesIndex][dataPointIndex] + '</span>' +
-              '</div>';
+          // let title = w.globals.tooltip.tooltipTitle.outerHTML;
+          const titleOuterText = Number.parseInt(w.globals.tooltip.tooltipTitle.outerText);
+          const timeText = graphData.value[dataPointIndex].x;
+          const title = `<div class="apexcharts-tooltip-title" ` +
+              `style="font-family: Helvetica, Arial, sans-serif; font-size: 12px;">` +
+              `Point#: ${dataPointIndex}, ${titleOuterText} Sec , Time : ${timeText} `
+              + `</div>`;
+
+
+          // console.log('wwwww', title);
+          let items = "";
+          w.globals.tooltip.ttItems.forEach(x => {
+            items = items + x.outerHTML;
+          });
+          // console.log('wwwww1', items);
+          console.log('wwwww1', w.globals.tooltip);
+          return title + items;
+
+          // console.log('qqqq',seriesIndex,w);
+          // return '<div class="arrow_box">' +
+          //     '<span>' + 'aaa' + seriesIndex + 'bbbb' + graphData.value[dataPointIndex].x + 'ccccc' + series[seriesIndex][dataPointIndex] + '</span>' +
+          //     '</div>';
         }
       }
     });
@@ -49,7 +112,10 @@ export default {
     const series = ref(
         [{
           name: 'series-1',
-          data: [30, 40, 45, 50, 49, 60, 70, 91]
+          data: []
+        }, {
+          name: 'series-2',
+          data: []
         }]
     );
 
@@ -57,7 +123,7 @@ export default {
       const data = store.getters['skiData/getGpxData'];
 
       graphData.value = data.slice(0, 100).map((record: GpxOnePosRecord) =>
-          ({x: record.time, y: record.dist ??= 0}));
+          ({x: record.time, y: record.dist ??= 0, y2: record.distE ??= 0}));
 
       let firstX;
       options.value.xaxis.categories = graphData.value.map((record, index) => {
@@ -67,6 +133,7 @@ export default {
         return (moment(`2013-02-08 ${record.x}`).valueOf() - firstX) / 1000;
       });
       series.value[0].data = graphData.value.map((record) => (record.y));
+      series.value[1].data = graphData.value.map((record) => (record.y2));
       //
       // const d1 = dataMan1.map((record) => moment(`2013-02-08 ${record.x}` ))
       // console.log('1111', d1);

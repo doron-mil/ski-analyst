@@ -64,7 +64,10 @@ export class GpxXml2JsonConverter {
             };
 
             if (prevPosition) {
-                newGpxOnePosRecord.dist = GeoCalculations.distanceCalculation(prevPosition, newGpxOnePosRecord);
+                newGpxOnePosRecord.dist =
+                    GeoCalculations.distanceCalculationNoElevation(prevPosition, newGpxOnePosRecord);
+                newGpxOnePosRecord.distE =
+                    GeoCalculations.accountElevation2Distance(newGpxOnePosRecord.dist, prevPosition, newGpxOnePosRecord);
                 newGpxOnePosRecord.dEle = newGpxOnePosRecord.alt! - prevPosition.alt!;
 
                 const deltaTime = momentTime.diff(prevMomentTime) / 1000; //in seconds

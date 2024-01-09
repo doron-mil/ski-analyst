@@ -24,14 +24,21 @@ export class GeoCalculations {
         return GeoCalculations.R * c;
     };
 
+    static accountElevation2HaversineDistance(
+        haversineDistance: number, alt1: number, alt2: number
+    ): number {
+        const elevationDiff = Math.abs(alt2 - alt1);
+
+        const distanceWithElevation = Math.sqrt(Math.pow(haversineDistance, 2) + Math.pow(elevationDiff, 2));
+        return distanceWithElevation;
+    }
+
     static haversineDistanceCalculationWithElevation(
         lat1: number, lon1: number, alt1: number, lat2: number, lon2: number, alt2: number
     ): number {
         const distanceNoElevation = GeoCalculations.haversineDistanceCalculation(lat1, lon1, lat2, lon2);
-        const elevationDiff = Math.abs(alt2 - alt1);
 
-        const distanceWithElevation = Math.sqrt(Math.pow(distanceNoElevation, 2) + Math.pow(elevationDiff, 2));
-        return distanceWithElevation;
+        return GeoCalculations.accountElevation2HaversineDistance(distanceNoElevation, alt2, alt1);
     }
 
     static distanceCalculation(
@@ -44,13 +51,26 @@ export class GeoCalculations {
             pos1.lat, pos1.lon, pos1.alt, pos2.lat, pos2.lon, pos2.alt);
     }
 
+    static distanceCalculationNoElevation(
+        pos1: PosRecord, pos2: PosRecord
+    ): number {
+        return GeoCalculations.haversineDistanceCalculation(
+            pos1.lat, pos1.lon, pos2.lat, pos2.lon);
+    }
+
+    static accountElevation2Distance(
+        distanceNoElevation: number, pos1: PosRecord, pos2: PosRecord
+    ): number {
+        return GeoCalculations.accountElevation2HaversineDistance(
+            distanceNoElevation, pos1.alt, pos2.alt,);
+    }
+
     static distanceCalculationElevationNotMandatory(
         pos1: PosRecord, pos2: PosRecord
     ): number {
         let retResult = null;
         if (!pos1.alt || !pos2.alt) {
-            retResult = GeoCalculations.haversineDistanceCalculation(
-                pos1.lat, pos1.lon, pos2.lat, pos2.lon);
+            retResult = GeoCalculations.distanceCalculationNoElevation(pos1, pos2);
         } else {
             retResult = GeoCalculations.distanceCalculation(pos1, pos2);
         }
