@@ -3,7 +3,7 @@
     <div class="graph-dialog-inner">
 
       <div>
-        <apexchart width="700" type="line" :options="options" :series="series"></apexchart>
+        <apexchart ref="realtimeChart" width="100%" height="90%" type="line" :options="options" :series="series"></apexchart>
       </div>
 
       <button @click="closeDialog()">
@@ -14,8 +14,9 @@
 </template>
 
 <script lang="ts">
-import {onMounted, ref} from 'vue';
+import {nextTick, onMounted, reactive, ref, watch} from 'vue';
 import VueApexCharts from 'vue3-apexcharts';
+import ApexCharts from 'apexcharts';
 import {useStore} from 'vuex';
 import {getGpxData} from '../store/ski-data/getters.ts';
 import moment from 'moment';
@@ -37,58 +38,20 @@ export default {
         type: 'numeric',
         categories: []
       },
-      yaxis: [
-        {
-          axisTicks: {
-            show: true
-          },
-          axisBorder: {
-            show: true,
-            color: "#FF1654"
-          },
-          labels: {
-            style: {
-              colors: "#FF1654"
-            }
-          },
-          title: {
-            text: "Series A",
-            style: {
-              color: "#FF1654"
-            }
-          }
-        },
-        {
-          opposite: true,
-          axisTicks: {
-            show: true
-          },
-          axisBorder: {
-            show: true,
-            color: "#247BA0"
-          },
-          labels: {
-            style: {
-              colors: "#247BA0"
-            }
-          },
-          title: {
-            text: "Series B",
-            style: {
-              color: "#247BA0"
-            }
-          }
-        }
-      ],
+      yaxis: [],
+
+      stroke: {
+        width: 2,
+      },
 
       tooltip: {
         custom: function ({series, seriesIndex, dataPointIndex, w}) {
           // let title = w.globals.tooltip.tooltipTitle.outerHTML;
           const titleOuterText = Number.parseInt(w.globals.tooltip.tooltipTitle.outerText);
-          const timeText = graphData.value[dataPointIndex].x;
+          const timeText = graphData.value[dataPointIndex].time;
           const title = `<div class="apexcharts-tooltip-title" ` +
               `style="font-family: Helvetica, Arial, sans-serif; font-size: 12px;">` +
-              `Point#: ${dataPointIndex}, ${titleOuterText} Sec , Time : ${timeText} `
+              `Point#: ${dataPointIndex}, ${titleOuterText} Sec , ${Number(titleOuterText / 60).toFixed(1)} Min , Time : ${timeText} `
               + `</div>`;
 
 
@@ -98,7 +61,7 @@ export default {
             items = items + x.outerHTML;
           });
           // console.log('wwwww1', items);
-          console.log('wwwww1', w.globals.tooltip);
+          // console.log('wwwww1', w.globals.tooltip);
           return title + items;
 
           // console.log('qqqq',seriesIndex,w);
@@ -109,40 +72,110 @@ export default {
       }
     });
 
+    const yaxisTemplate = {
+      decimalsInFloat: 2,
+      axisTicks: {
+        show: true
+      },
+      axisBorder: {
+        show: true,
+        color: "#FF1654"
+      },
+      labels: {
+        style: {
+          colors: "#FF1654"
+        }
+      },
+      title: {
+        text: "Series A",
+        style: {
+          color: "#FF1654"
+        }
+      }
+    };
+
     const series = ref(
-        [{
-          name: 'series-1',
-          data: []
-        }, {
-          name: 'series-2',
-          data: []
-        }]
+        []
     );
+
+    const realtimeChart = ref();
 
     onMounted(() => {
       const data = store.getters['skiData/getGpxData'];
 
-      graphData.value = data.slice(0, 100).map((record: GpxOnePosRecord) =>
-          ({x: record.time, y: record.dist ??= 0, y2: record.distE ??= 0}));
+      graphData.value = data.slice(0, 100);
 
-      let firstX;
-      options.value.xaxis.categories = graphData.value.map((record, index) => {
-        if (!index) {
-          firstX = moment(`2013-02-08 ${record.x}`).valueOf();
+      Object.keys(data[1]).forEach((key) => {
+        if (key === 'time') {
+          let firstX;
+          options.value.xaxis.categories = graphData.value.map((record, index) => {
+            if (index === 0) {
+              firstX = moment(`2013-02-08 ${record.time}`).valueOf();
+            }
+            return (moment(`2013-02-08 ${record.time}`).valueOf() - firstX) / 1000;
+          });
+
+        } else {
+          const newYAxisProp = Object.assign({}, yaxisTemplate);
+          newYAxisProp.title.text = key;
+          options.value.yaxis.push(newYAxisProp);
+
+          const data = graphData.value.map((record) => {
+            let recordAttr = record[key] ?? 0;
+            if (key === 'lat' || key === 'lon') {
+              recordAttr = Math.trunc((recordAttr - Math.trunc(recordAttr)) * 10000);
+            } else if (key === 'dist' || key === 'distE' || key === 'speed') {
+              recordAttr = Number(recordAttr).toFixed(2);
+            } else if (key === 'dEle') {
+              recordAttr = Number(recordAttr).toFixed(1);
+            }
+
+            return recordAttr;
+          });
+
+          series.value.push(
+              {
+                name: key,
+                data
+              });
         }
-        return (moment(`2013-02-08 ${record.x}`).valueOf() - firstX) / 1000;
       });
-      series.value[0].data = graphData.value.map((record) => (record.y));
-      series.value[1].data = graphData.value.map((record) => (record.y2));
+
+      console.log('1111', series.value);
+      // graphData.value = data.slice(0, 100).map((record: GpxOnePosRecord) =>
+      //     ({x: record.time, y: record.dist ??= 0, y2: record.distE ??= 0}));
+      //
+      // let firstX;
+      // options.value.xaxis.categories = graphData.value.map((record, index) => {
+      //   if (!index) {
+      //     firstX = moment(`2013-02-08 ${record.x}`).valueOf();
+      //   }
+      //   return (moment(`2013-02-08 ${record.x}`).valueOf() - firstX) / 1000;
+      // });
+      // series.value[0].data = graphData.value.map((record) => (record.y));
+      // series.value[1].data = graphData.value.map((record) => (record.y2));
+
+
       //
       // const d1 = dataMan1.map((record) => moment(`2013-02-08 ${record.x}` ))
       // console.log('1111', d1);
       // console.log('1111', series.value[0].data);
+
+      nextTick(() => {
+        series.value.forEach((series) => {
+          if (series.name !== 'speed') {
+            realtimeChart.value.hideSeries(series.name);
+          }
+        });
+      });
+
+
     });
 
     return {
       options,
-      series
+      series,
+      realtimeChart,
     };
   }
 };
@@ -167,6 +200,10 @@ export default {
     height: 90%;
     background-color: #FFF;
     padding: 32px;
+
+    DIV {
+      height: 95%;
+    }
   }
 
 }
