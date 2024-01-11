@@ -3,7 +3,8 @@
     <div class="graph-dialog-inner">
 
       <div>
-        <apexchart ref="realtimeChart" width="100%" height="90%" type="line" :options="options" :series="series"></apexchart>
+        <apexchart ref="realtimeChart" width="100%" height="90%" type="line" :options="options"
+                   :series="series"></apexchart>
       </div>
 
       <button @click="closeDialog()">
@@ -55,10 +56,29 @@ export default {
               + `</div>`;
 
 
-          // console.log('wwwww', title);
+        // console.log('wwwww', w.globals.tooltip);
           let items = "";
           w.globals.tooltip.ttItems.forEach(x => {
-            items = items + x.outerHTML;
+            // const doc = new DOMParser().parseFromString(ht, "text/xml");
+            // const doc = new DOMParser(x);
+            // console.log('wwwww','\n\n', doc.documentElement.outerHTML,'\n\n',x.outerHTML);
+            if (!x.getAttribute('style').includes('none')) {
+              console.log('wwwww', '\n\n', x.getAttribute('style'),
+                  x.getElementsByClassName("apexcharts-tooltip-text-y-label")[0].outerText
+              );
+              if (x.getElementsByClassName("apexcharts-tooltip-text-y-label")[0].outerText.includes('lat')) {
+                if (x.getElementsByClassName("apexcharts-tooltip-text-y-value").length) {
+                  // console.log('w3', x.getElementsByClassName("apexcharts-tooltip-text-y-value")[0].innerText);
+                  x.getElementsByClassName("apexcharts-tooltip-text-y-value")[0].innerText = 'aaa';
+                } else {
+                  console.log('w2', x.outerHTML);
+                }
+
+              }
+              // items = items + ht;
+              // items = items + doc.documentElement.outerHTML;
+              items = items + x.outerHTML;
+            }
           });
           // console.log('wwwww1', items);
           // console.log('wwwww1', w.globals.tooltip);

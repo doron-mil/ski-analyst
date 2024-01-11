@@ -72,6 +72,9 @@ export class GpxXml2JsonConverter {
 
                 const deltaTime = momentTime.diff(prevMomentTime) / 1000; //in seconds
                 newGpxOnePosRecord.speed = newGpxOnePosRecord.dist / deltaTime;
+
+                newGpxOnePosRecord.bearing =
+                    GeoCalculations.bearingCalculation(prevPosition, newGpxOnePosRecord);
             }
 
             gpxRecord.addPositionRecord(newGpxOnePosRecord);

@@ -77,4 +77,33 @@ export class GeoCalculations {
         return retResult;
     }
 
+    static bearingCalculationLonLat(
+        lat1: number, lon1: number, lat2: number, lon2: number
+    ): number {
+        const dLonRad = GeoCalculations.deg2Rad(lon2 - lon1);
+        const lat1Rad = GeoCalculations.deg2Rad(lat1);
+        const lat2Rad = GeoCalculations.deg2Rad(lat2);
+
+        const y = Math.sin(dLonRad) * Math.cos(lat2Rad);
+        const x = Math.cos(lat1Rad) * Math.sin(lat2Rad) -
+            Math.sin(lat1Rad) * Math.cos(lat2Rad) * Math.cos(dLonRad);
+        const bearingRad = Math.atan2(y, x);
+        const bearing = (bearingRad * 180 / Math.PI + 360) % 360; // in degrees
+        return bearing;
+
+        // const y = Math.sin(λ2 - λ1) * Math.cos(φ2);
+        // const x = Math.cos(φ1) * Math.sin(φ2) -
+        //     Math.sin(φ1) * Math.cos(φ2) * Math.cos(λ2 - λ1);
+        // const brngRad = Math.atan2(y, x);
+        // const brng = (brngRad * 180 / Math.PI + 360) % 360; // in degrees
+        // return brng;
+    }
+
+    static bearingCalculation(
+        pos1: PosRecord, pos2: PosRecord
+    ): number {
+
+        return GeoCalculations.bearingCalculationLonLat(pos1.lat, pos1.lon, pos2.lat, pos2.lon);
+    }
+
 }

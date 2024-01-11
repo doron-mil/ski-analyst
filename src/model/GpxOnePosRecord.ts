@@ -6,5 +6,6 @@ export interface GpxOnePosRecord extends PosRecord{
     distE?: number;
     dEle?: number;
     speed?: number;
+    bearing?: number;
 
 }
