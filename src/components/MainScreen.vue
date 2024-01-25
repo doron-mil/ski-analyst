@@ -1,22 +1,4 @@
 <template>
-  <div>
-
-    <v-menu>
-      <template v-slot:activator="{ props }">
-        <v-btn class="main-menu-btn" icon="mdi-menu" v-bind="props"></v-btn>
-      </template>
-
-      <v-list>
-        <v-list-item
-            v-for="(item, i) in items"
-            :key="i"
-
-        >
-          <v-list-item-title>{{ item.title }}</v-list-item-title>
-        </v-list-item>
-      </v-list>
-    </v-menu>
-  </div>
 
   <div class="buttons-div">
     <button @click="findElevators">Find Elevators</button>
@@ -102,12 +84,6 @@ export default {
     const form = ref<HTMLFormElement>();
     const indexedDb = inject('$indexedDb') as IndexedDb;
 
-    const items = ref([
-      {title: 'Click Me'},
-      {title: 'Click Me'},
-      {title: 'Click Me'},
-      {title: 'Click Me 2'},
-    ]);
 
     onMounted(async () => {
       const gpxRecord = await indexedDb.getGpxRecord('2024_01_01');
@@ -212,7 +188,6 @@ export default {
       findElevators,
       OpenGraphDialog,
       togglePopup,
-      items
     };
 
   }
@@ -220,10 +195,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.main-menu-btn {
-  display: block;
-  position:fixed;
-}
 
 .buttons-div {
   display: flex;
