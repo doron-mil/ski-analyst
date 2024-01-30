@@ -19,7 +19,9 @@
   </div>
 
   <div>
-    <router-view></router-view>
+    <Suspense>
+      <router-view></router-view>
+    </Suspense>
   </div>
 </template>
 
@@ -29,11 +31,12 @@ import {ref} from 'vue';
 export default {
   name: "AppDisplay",
   setup() {
+
     const items = ref([
-      {title: 'Graph' , to:'/graph'},
-      {title: 'Click Me', to:'/'},
-      {title: 'Click Me', to:'/'},
-      {title: 'Click Me 2', to:'/'},
+      {title: 'Graph', to: '/graph'},
+      {title: 'Click Me', to: '/'},
+      {title: 'Click Me', to: '/'},
+      {title: 'Click Me 2', to: '/'},
     ]);
 
     return {
@@ -53,7 +56,8 @@ div {
 
 .main-menu-btn {
   display: block;
-  position:fixed;
+  position: fixed;
+  z-index: 99;
 }
 
 </style>

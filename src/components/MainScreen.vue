@@ -49,7 +49,7 @@
 
 <script lang="ts">
 import GraphDialog from '../dialogs/GraphDialog.vue';
-import {mdiAccount} from '@mdi/font';
+// import {mdiAccount} from '@mdi/font';
 
 import {GpxXml2JsonConverter} from '../Utils/GpxXml2JsonConverter';
 import {ref, inject, reactive, onMounted} from "vue";
@@ -57,15 +57,15 @@ import {IndexedDb} from '../Utils/IndexedDb';
 import {GeoCalculations} from '../Utils/GeoCalculations.ts';
 import {PosRecord} from '../model/PosRecord.ts';
 import {SiteData} from '../model/SiteData.ts';
-import {GpxRecord} from '../model/GpxRecord.ts';
-import {useStore} from 'vuex';
+// import {GpxRecord} from '../model/GpxRecord.ts';
+// import {useStore} from 'vuex';
 
 export default {
   name: "MainScreen",
   components: {GraphDialog},
   setup() {
 
-    const store = useStore();
+    // const store = useStore();
 
     const point1 = ref<string>('45.38903842,6.56744612');
     const point2 = ref<string>('45.38878632,6.56737927');
@@ -86,12 +86,12 @@ export default {
 
 
     onMounted(async () => {
-      const gpxRecord = await indexedDb.getGpxRecord('2024_01_01');
-      if (gpxRecord) {
-        //const newGpxRecord = new GpxRecord();\
-
-        store.commit('skiData/setGpxRecord', gpxRecord);
-      }
+      // const gpxRecord = await indexedDb.getGpxRecord('2024_01_01');
+      // if (gpxRecord) {
+      //   //const newGpxRecord = new GpxRecord();\
+      //
+      //   store.commit('skiData/setGpxRecord', gpxRecord);
+      // }
     });
 
     function onFileChanged($event: Event) {
