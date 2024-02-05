@@ -26,6 +26,7 @@
 
       <div class="graph-section">
         <apexchart ref="realtimeChart" width="100%" height="90%" type="line" :options="options"
+                   @legendClick="graphLegendClicked"
                    :series="dataSeries"></apexchart>
       </div>
       <div v-html="showResults">
@@ -55,12 +56,14 @@ export default {
 
     const showResults = ref();
 
+    const displayedLegends = ref([6]);
+
     const options = ref({
       chart: {
         id: 'vuechart-example',
         toolbar: {
           show: false // Hiding the toolbar
-        }
+        },
       },
       xaxis: {
         type: 'numeric',
@@ -233,14 +236,26 @@ export default {
 
     const hideNotDisplaySeries = (() => {
       nextTick(() => {
-        dataSeries.value.forEach((series) => {
-          if (series.name !== 'speed') {
+        dataSeries.value.forEach((series, index) => {
+          if (!displayedLegends.value.includes(index)) {
             realtimeChart.value.hideSeries(series.name);
           }
+          // if (series.name !== 'speed') {
+          //    realtimeChart.value.hideSeries(series.name);
+          //  }
         });
       });
 
     });
+
+    const graphLegendClicked = (chartContext, seriesIndex, config) => {
+      const displayedLegendsIndex = displayedLegends.value.indexOf(seriesIndex);
+      if (displayedLegendsIndex >= 0) {
+        displayedLegends.value.splice(displayedLegendsIndex, 1);
+      } else {
+        displayedLegends.value.push(seriesIndex);
+      }
+    };
 
     onMounted(() => {
       hideNotDisplaySeries();
@@ -275,6 +290,7 @@ export default {
       modifyData();
     });
 
+
     return {
       options,
       dataSeries,
@@ -286,6 +302,7 @@ export default {
       displayGraph,
       currentPage,
       onPageChange,
+      graphLegendClicked,
     };
   }
 };
